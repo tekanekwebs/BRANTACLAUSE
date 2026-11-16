@@ -34,7 +34,6 @@
     <body>
         <title>The Branti-establishment</title>
         <meta name="claude:viewport-fit-sides" content="cover" />
-        <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
             href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,600&family=Mountains+of+Christmas:wght@700&display=swap"
@@ -333,6 +332,8 @@
                     radial-gradient(circle at 15% 88%, rgba(255,255,255,0.4) 0 2px, transparent 3px);
             }
             .content {
+                font-family: var(--display);
+                font-style: italic;
                 position: relative;
                 z-index: 3;
                 display: flex;
@@ -739,33 +740,6 @@
             @media (min-width: 1100px) { .m-branta { width: min(46vw, 740px); } }
             @media (min-width: 1100px) and (max-width: 1300px) { .m-branta { width: 44vw; } }
             @media (max-width: 1099px) { .m-branta { width: min(58vw, 500px); } }
-
-            /* hero text in a Black Chancery style (blackletter fallback via Google Fonts) */
-            .santa .label, .branta .label, .ho, .no {
-                font-family: "Black Chancery", "BlackChancery", "UnifrakturCook", "Apple Chancery", "Lucida Calligraphy", cursive !important;
-                font-style: normal !important; font-weight: 700 !important;
-            }
-            .santa .label, .branta .label { text-transform: none; letter-spacing: 0.02em; font-size: clamp(18px, 4.6vw, 26px) !important; }
-            .no { line-height: 0.92 !important; }
-            @media (min-width: 1100px) { .santa .label, .branta .label { font-size: clamp(22px, calc(var(--s) * 22), 26px) !important; } }
-
-            /* hero text: bigger + centred */
-            .santa, .branta { align-items: center; text-align: center; }
-            .copy { text-align: center; }
-            @media (min-width: 1100px) {
-                .copy { width: 40vw; }
-                .ho { font-size: max(34px, calc(var(--s) * 61)); }
-                .n1 { font-size: max(45px, calc(var(--s) * 78)); }
-                .n2 { font-size: max(64px, calc(var(--s) * 114)); }
-                .n3 { font-size: max(87px, calc(var(--s) * 150)); }
-            }
-            @media (max-width: 1099px) {
-                .copy { padding-top: calc(min(58vw, 500px) * 0.544 + 40px); }
-                .ho { font-size: clamp(26px, 7.6vw, 56px); }
-                .n1 { font-size: clamp(40px, 12vw, 84px); }
-                .n2 { font-size: clamp(54px, 16.5vw, 112px); }
-                .n3 { font-size: clamp(70px, 21vw, 146px); }
-            }
 </style>
 
         <header class="site" id="top">
