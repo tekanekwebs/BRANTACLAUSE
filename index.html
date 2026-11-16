@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf8" />
         <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+        <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
         <style>
             :root {
                 color-scheme: light;
@@ -740,7 +741,117 @@
             @media (min-width: 1100px) { .m-branta { width: min(46vw, 740px); } }
             @media (min-width: 1100px) and (max-width: 1300px) { .m-branta { width: 44vw; } }
             @media (max-width: 1099px) { .m-branta { width: min(58vw, 500px); } }
-</style>
+
+            /* ---------- night-time green background (darker, calmer) ---------- */
+            :root { --bg: #050d09; }
+            .m-bg { filter: brightness(0.6) saturate(0.85) hue-rotate(-4deg); }
+            .stage::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                pointer-events: none;
+                background:
+                    radial-gradient(ellipse 70% 60% at 50% 45%, rgba(6, 22, 16, 0) 0%, rgba(3, 10, 8, 0.55) 100%),
+                    linear-gradient(180deg, rgba(4, 14, 11, 0.35) 0%, rgba(3, 9, 7, 0.2) 50%, rgba(2, 7, 5, 0.5) 100%);
+            }
+
+            /* ---------- the invitation is now a speech bubble ---------- */
+            .unit .bubble {
+                background: rgba(255, 246, 229, 0.96);
+                color: #0b1f16;
+                border-radius: 22px;
+                min-height: 0;
+                padding: 15px 20px 15px 24px;
+                gap: 12px;
+                box-shadow: 0 8px 26px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(242, 193, 78, 0.25);
+                cursor: pointer;
+            }
+            .unit .bubble::after {
+                left: -10px;
+                top: calc(50% - 4px);
+                width: 16px;
+                height: 18px;
+                background: rgba(255, 246, 229, 0.96);
+                clip-path: polygon(100% 0, 0 70%, 100% 100%);
+            }
+            .unit .bubble .go { width: auto; border-left: 0; color: var(--red); }
+            .unit .bubble:hover { transform: translateY(-2px); filter: none; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(242, 193, 78, 0.5); }
+            .unit .bubble:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+            @media (max-width: 1099px) {
+                .unit .bubble { min-height: 0; padding: 13px 16px 13px 20px; border-radius: 20px; }
+                .unit .bubble .go { width: auto; }
+            }
+        
+            /* ---------- headline text: bigger and centred ---------- */
+            @media (min-width: 1100px) {
+                .ho { font-size: max(36px, calc(var(--s) * 64)); }
+                .n1 { font-size: max(48px, calc(var(--s) * 82)); }
+                .n2 { font-size: max(68px, calc(var(--s) * 120)); }
+                .n3 { font-size: max(92px, calc(var(--s) * 158)); transform-origin: center bottom; }
+                .label { font-size: clamp(14px, calc(var(--s) * 19), 21px); }
+                .copy { align-items: center; text-align: center; }
+                .santa, .branta { align-items: center; }
+                .content { align-items: center; }
+                .unit { align-self: center; }
+            }
+            @media (max-width: 1099px) {
+                .ho { font-size: clamp(24px, 7vw, 58px); }
+                .n1 { font-size: clamp(38px, 11.4vw, 88px); }
+                .n2 { font-size: clamp(50px, 15.4vw, 120px); }
+                .n3 { font-size: clamp(66px, 19.8vw, 156px); }
+            }
+        
+            /* ---------- Victorian / vintage serif for the headline ---------- */
+            .label { font-family: "IM Fell English SC", "Playfair Display", Georgia, serif; font-weight: 400; letter-spacing: 0.14em; }
+            .ho, .no { font-family: "Playfair Display", "Bodoni MT", Didot, Georgia, serif; font-style: italic; }
+            .ho { font-weight: 700; }
+            .no { font-weight: 900; }
+        
+            /* ---------- Blackletter Christmas font (Cloister Black, else UnifrakturCook) ---------- */
+            .label, .ho, .no { font-family: "Cloister Black", "UnifrakturCook", "Old English Text MT", "IM Fell English SC", Georgia, serif; font-style: normal; font-weight: 700; }
+            .label { text-transform: none; letter-spacing: 0.02em; font-size: clamp(17px, calc(var(--s) * 24), 27px); }
+            .ho { font-weight: 700; }
+            .no { font-weight: 700; line-height: 1; }
+            @media (max-width: 1099px) { .label { font-size: clamp(17px, 4.6vw, 28px); } }
+
+            /* ---------- video slightly larger ---------- */
+            @media (min-width: 1100px) { .m-branta { width: min(50vw, 800px); } }
+            @media (min-width: 1100px) and (max-width: 1300px) { .m-branta { width: 47vw; } }
+            @media (max-width: 1099px) { .m-branta { width: min(61vw, 520px); } }
+
+            /* ---------- deeper Christmas-night background ---------- */
+            :root { --bg: #030906; }
+            .m-bg { filter: brightness(0.42) saturate(0.8) hue-rotate(-4deg); }
+            .stage::before {
+                background:
+                    radial-gradient(ellipse 75% 65% at 50% 45%, rgba(5, 20, 14, 0) 0%, rgba(2, 8, 6, 0.7) 100%),
+                    linear-gradient(180deg, rgba(3, 12, 9, 0.5) 0%, rgba(2, 8, 6, 0.3) 50%, rgba(1, 5, 4, 0.6) 100%);
+            }
+        
+            @media (max-width: 1099px) {
+                .m-branta { width: min(60vw, 510px); }
+                .ho { font-size: clamp(22px, 6vw, 52px); }
+                .label { font-size: clamp(16px, 4.2vw, 26px); }
+            }
+        
+            /* ---------- speed invitation under the video ---------- */
+            .spd-t {
+                background: none; border: 0; backdrop-filter: none; -webkit-backdrop-filter: none;
+                padding: 4px 2px; min-height: 28px;
+                font-family: var(--body); font-size: 12px; font-style: italic; letter-spacing: 0.01em;
+                color: rgba(255, 246, 229, 0.82); white-space: nowrap;
+                text-decoration: underline dotted rgba(242, 193, 78, 0.7); text-underline-offset: 4px;
+                text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+            }
+            .spd-t:hover, .spd-t[aria-expanded="true"] { color: var(--gold); }
+            .spd-t svg { color: var(--gold); }
+            .spd { text-align: right; }
+            .spd-opts { animation: none; transform-origin: top right; }
+            .spd-opts:not([hidden]) { animation: spdin 0.25s var(--ease) both; }
+            @keyframes spdin { from { opacity: 0; transform: translateY(-4px) scale(0.96); } to { opacity: 1; transform: none; } }
+            @media (max-width: 1099px) { .spd-t { font-size: 11px; } }
+        </style>
 
         <header class="site" id="top">
             <div class="bar">
@@ -808,7 +919,7 @@
                             <div class="m-branta" id="brantaVid">
                                 <video class="bv" src="branta-clause-vids.mp4" autoplay loop muted playsinline preload="auto" disablepictureinpicture aria-label="Branta Claus wagging his finger: no"></video>
                                 <div class="spd" role="group" aria-label="Finger speed">
-                                    <button type="button" class="spd-t" aria-expanded="false" aria-haspopup="true" aria-label="Finger speed: Normal"><span class="spd-cur">Normal</span><svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                                    <button type="button" class="spd-t" aria-expanded="false" aria-haspopup="true" aria-label="Adjust Branta's finger-wagging speed! Current speed: Normal"><span class="spd-cur">Adjust Branta's finger-wagging speed!</span><svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                                     <div class="spd-opts" hidden>
                                         <button type="button" data-r="0.6" aria-pressed="false">Slow</button>
                                         <button type="button" data-r="1" aria-pressed="true">Normal</button>
@@ -857,8 +968,8 @@
                     b.addEventListener("click", function () {
                         rate = parseFloat(b.getAttribute("data-r"));
                         Array.prototype.forEach.call(btns, function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-                        cur.textContent = b.textContent;
-                        tog.setAttribute("aria-label", "Finger speed: " + b.textContent);
+                        
+                        tog.setAttribute("aria-label", "Adjust Branta's finger-wagging speed! Current speed: " + b.textContent);
                         apply();
                         setOpen(false);
                     });
