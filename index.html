@@ -853,9 +853,607 @@
             @media (max-width: 1099px) { .spd-t { font-size: 11px; } }
         </style>
 
+        <style id="elf-css">
+            /* ---------- header: domain pill (fits inside the existing 78px bar, no height change) ---------- */
+            .brand-domain {
+                align-self: flex-start;
+                display: inline-block;
+                padding: 4px 10px 5px;
+                border-radius: 999px;
+                background: #050d09;
+                color: var(--gold);
+                font-family: var(--body);
+                font-weight: 700;
+                font-size: 12.5px;
+                letter-spacing: 0.06em;
+                line-height: 1;
+                text-transform: none;
+                box-shadow: inset 0 0 0 1px rgba(242, 193, 78, 0.45);
+            }
+            @media (max-width: 1080px) { .brand-domain { font-size: 12px; padding: 4px 9px 5px; } }
+
+            /* ---------- Meet Our Elf (all classes prefixed mc- so nothing collides with the Home tab) ---------- */
+            .mc-elf {
+                position: relative;
+                isolation: isolate;
+                overflow: hidden;
+                box-sizing: border-box;
+                background-color: var(--bg);
+                background-image:
+                    radial-gradient(ellipse 60% 70% at 88% 18%, rgba(242, 193, 78, 0.1), rgba(242, 193, 78, 0) 70%),
+                    radial-gradient(ellipse 50% 60% at 4% 100%, rgba(196, 47, 41, 0.14), rgba(196, 47, 41, 0) 70%);
+                border-top: 1px solid var(--line);
+                padding: clamp(48px, 8vw, 96px) 0;
+            }
+            .mc-wrap {
+                max-width: 1100px;
+                margin: 0 auto;
+                box-sizing: border-box;
+                padding-left: max(clamp(20px, 5vw, 48px), env(safe-area-inset-left, 0px));
+                padding-right: max(clamp(20px, 5vw, 48px), env(safe-area-inset-right, 0px));
+            }
+            .mc-grid {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 340px;
+                grid-template-areas: "head video" "text video";
+                grid-template-rows: auto 1fr;
+                column-gap: clamp(32px, 6vw, 80px);
+                row-gap: 20px;
+                align-items: start;
+            }
+            .mc-title {
+                grid-area: head;
+                margin: 0;
+                font-family: "Cloister Black", "UnifrakturCook", "Old English Text MT", Georgia, serif;
+                font-weight: 700;
+                font-size: clamp(40px, 7vw, 68px);
+                line-height: 1;
+                color: var(--ink);
+            }
+            .mc-text {
+                grid-area: text;
+                margin: 0;
+                max-width: 62ch;
+                font-family: var(--body);
+                font-weight: 500;
+                font-size: clamp(17px, 1.5vw, 19px);
+                line-height: 1.7;
+                color: var(--ink);
+            }
+            /* hooks for per-word fonts later: set font-family on any of these */
+            .mc-name { font-family: var(--display); font-weight: 900; color: var(--gold); }
+            .mc-yesmen { font-style: italic; }
+            .mc-no { font-family: "Cloister Black", "UnifrakturCook", Georgia, serif; font-weight: 700; font-size: 1.35em; line-height: 1; color: var(--red-hot); }
+            .mc-turn { font-weight: 700; letter-spacing: 0.02em; color: var(--gold); }
+            .mc-you { font-weight: 700; color: var(--red-hot); }
+            .mc-brigade { font-family: var(--display); font-style: italic; font-weight: 700; color: var(--gold); }
+            .mc-lead { font-weight: 700; }
+
+            .mc-video {
+                grid-area: video;
+                --mc-vw: min(100%, 340px, calc(78svh * 382 / 832));
+                justify-self: center;
+                width: var(--mc-vw);
+            }
+            .mc-frame {
+                position: relative;
+                display: block;
+                width: 100%;
+                aspect-ratio: 382 / 832;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                border: 1px solid rgba(242, 193, 78, 0.38);
+                border-radius: 20px;
+                background: #000;
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent;
+                box-shadow: 0 0 0 1px rgba(255, 246, 229, 0.06), 0 22px 48px rgba(0, 0, 0, 0.55);
+                transition: box-shadow 0.35s var(--ease), border-color 0.35s var(--ease);
+            }
+            .mc-frame:hover { border-color: rgba(242, 193, 78, 0.7); }
+            .mc-frame:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+            .mc-vid { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 51.2% 50%; background: #000; pointer-events: none; }
+            .mc-play, .mc-pause {
+                position: absolute;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                color: var(--ink);
+                pointer-events: none;
+                transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+            }
+            .mc-play {
+                left: 50%; top: 50%;
+                width: 84px; height: 84px;
+                margin: -42px 0 0 -42px;
+                background: rgba(196, 47, 41, 0.94);
+                box-shadow: 0 0 0 6px rgba(255, 246, 229, 0.22), 0 12px 30px rgba(0, 0, 0, 0.55);
+            }
+            .mc-frame:hover .mc-play { transform: scale(1.06); }
+            .mc-pause {
+                right: 12px; bottom: 12px;
+                width: 40px; height: 40px;
+                background: rgba(3, 9, 6, 0.62);
+                box-shadow: 0 0 0 1px rgba(255, 246, 229, 0.3);
+                opacity: 0;
+            }
+            .mc-frame.is-playing .mc-play { opacity: 0; transform: scale(0.8); }
+            .mc-frame.is-playing .mc-pause { opacity: 0.9; }
+
+            /* Recommended Nonprofits (currently holds TEMPORARY example cards; see the comment in the HTML) */
+            .mc-orgs { margin-top: clamp(40px, 6vw, 72px); }
+            .mc-orgs-title {
+                margin: 0 0 clamp(18px, 3vw, 28px);
+                font-family: var(--display);
+                font-weight: 900;
+                font-size: clamp(26px, 3.4vw, 36px);
+                line-height: 1.1;
+                color: var(--ink);
+            }
+            .mc-org-groups {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: clamp(16px, 3vw, 28px);
+                align-items: start;
+            }
+            .mc-org-group {
+                box-sizing: border-box;
+                min-height: 150px;
+                padding: clamp(18px, 2.4vw, 24px);
+                border: 1px solid rgba(242, 193, 78, 0.3);
+                border-radius: 18px;
+                background: rgba(255, 246, 229, 0.03);
+            }
+            .mc-org-heading {
+                margin: 0 0 16px;
+                padding-bottom: 12px;
+                border-bottom: 1px solid var(--line);
+                font-family: var(--display);
+                font-weight: 700;
+                font-size: clamp(18px, 2vw, 22px);
+                line-height: 1.2;
+                color: var(--gold);
+            }
+            .mc-org-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+            .mc-org-card {
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 16px 18px;
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                background: rgba(255, 246, 229, 0.05);
+            }
+            .mc-org-name {
+                margin: 0;
+                font-family: var(--display);
+                font-weight: 700;
+                font-size: 18px;
+                line-height: 1.25;
+                color: var(--ink);
+            }
+            .mc-org-desc {
+                margin: 0;
+                font-family: var(--body);
+                font-size: 15px;
+                line-height: 1.55;
+                color: var(--muted);
+            }
+            .mc-org-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 8px;
+                padding: 10px 20px;
+                border: 0;
+                border-radius: 10px;
+                background: #1f5a3d;
+                font-family: var(--body);
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 1.2;
+                color: #fff;
+                text-decoration: none;
+                box-shadow: 0 1px 2px rgba(20, 38, 29, 0.2);
+                transition: background-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+            }
+            .mc-org-btn:hover { background: #14402b; box-shadow: 0 4px 12px rgba(31, 90, 61, 0.35); }
+            .mc-org-btn:focus-visible { outline: 3px solid #f2c14e; outline-offset: 2px; }
+
+            @media (max-width: 860px) {
+                .mc-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "video" "text"; row-gap: 24px; }
+                .mc-title { text-align: center; }
+                .mc-video { --mc-vw: min(100%, 320px, calc(78svh * 382 / 832)); }
+                .mc-text { justify-self: center; }
+            }
+            @media (max-width: 600px) {
+                .mc-org-groups { grid-template-columns: minmax(0, 1fr); }
+                .mc-org-group { min-height: 96px; }
+            }
+
+            /* ---------- Ideas for Generosity Without Spending Money (all classes prefixed gi-) ---------- */
+            .gi-section {
+                position: relative;
+                isolation: isolate;
+                overflow: hidden;
+                box-sizing: border-box;
+                background-color: var(--bg);
+                background-image:
+                    radial-gradient(ellipse 55% 60% at 8% 0%, rgba(242, 193, 78, 0.1), rgba(242, 193, 78, 0) 70%),
+                    radial-gradient(ellipse 50% 60% at 96% 100%, rgba(196, 47, 41, 0.14), rgba(196, 47, 41, 0) 70%);
+                border-top: 1px solid var(--line);
+                padding: clamp(48px, 8vw, 96px) 0;
+            }
+            .gi-wrap {
+                max-width: 1100px;
+                margin: 0 auto;
+                box-sizing: border-box;
+                padding-left: max(clamp(20px, 5vw, 48px), env(safe-area-inset-left, 0px));
+                padding-right: max(clamp(20px, 5vw, 48px), env(safe-area-inset-right, 0px));
+            }
+            .gi-title {
+                margin: 0 0 clamp(14px, 2vw, 20px);
+                font-family: var(--display);
+                font-weight: 800;
+                letter-spacing: -0.01em;
+                font-size: clamp(36px, 6vw, 60px);
+                line-height: 1.05;
+                color: var(--ink);
+            }
+            .gi-opening {
+                margin: 0;
+                max-width: 34ch;
+                font-family: var(--display);
+                font-weight: 700;
+                font-size: clamp(22px, 3vw, 32px);
+                line-height: 1.35;
+                color: var(--gold);
+            }
+            .gi-opening span { color: var(--muted); font-weight: 500; font-style: italic; }
+
+            /* video placeholder: replace the .gi-video-ph div with a <video> or <iframe> inside .gi-video when ready */
+            .gi-video {
+                margin-top: clamp(28px, 4vw, 44px);
+            }
+            .gi-video-ph {
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                padding: 20px;
+                border: 1px dashed rgba(242, 193, 78, 0.4);
+                border-radius: 20px;
+                background: rgba(255, 246, 229, 0.03);
+                text-align: center;
+            }
+            .gi-video-ph svg { color: var(--gold); opacity: 0.8; }
+            .gi-video-ph p {
+                margin: 0;
+                font-family: var(--body);
+                font-size: clamp(14px, 1.6vw, 16px);
+                color: var(--muted);
+            }
+
+            /* ---- Generosity carousel ---- */
+            .gi-carousel {
+                --gi-ease: cubic-bezier(0.65, 0, 0.35, 1);
+                --gi-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+                margin-top: clamp(32px, 5vw, 56px);
+            }
+            .gi-viewport { overflow: hidden; border-radius: 22px; touch-action: pan-y; cursor: grab; }
+            .gi-viewport.is-drag { cursor: grabbing; }
+            .gi-viewport:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+            .gi-track {
+                display: flex;
+                transform: translate3d(0, 0, 0);
+                transition: transform 0.85s var(--gi-ease);
+                will-change: transform;
+            }
+            .gi-track.is-drag { transition: none; }
+            .gi-slide {
+                flex: 0 0 100%;
+                min-width: 0;
+                box-sizing: border-box;
+                display: flex;
+                justify-content: center;
+                padding: clamp(6px, 1.5vw, 14px);
+                opacity: 0.35;
+                transform: scale(0.96);
+                transition: opacity 0.7s var(--gi-ease), transform 0.85s var(--gi-ease);
+            }
+            .gi-slide.is-active { opacity: 1; transform: scale(1); }
+            .gi-card {
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                max-width: 760px;
+                overflow: hidden;
+                border: 1px solid var(--line);
+                border-radius: 20px;
+                background: rgba(255, 246, 229, 0.05);
+                box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.8);
+                transition: border-color 0.4s var(--gi-ease-out), background-color 0.4s var(--gi-ease-out), box-shadow 0.4s var(--gi-ease-out);
+            }
+            .gi-card:hover { border-color: rgba(242, 193, 78, 0.5); background: rgba(255, 246, 229, 0.075); box-shadow: 0 30px 70px -28px rgba(242, 193, 78, 0.22); }
+
+            /* image slot with dark-emerald/gold fallback (shown if the photo fails to load) */
+            .gi-media {
+                position: relative;
+                overflow: hidden;
+                aspect-ratio: 16 / 9;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                background:
+                    radial-gradient(ellipse 70% 80% at 50% 0%, rgba(242, 193, 78, 0.18), rgba(242, 193, 78, 0) 70%),
+                    repeating-linear-gradient(135deg, rgba(242, 193, 78, 0.05) 0 2px, transparent 2px 14px),
+                    linear-gradient(135deg, #0b2a1b, #14402b);
+                border-bottom: 1px solid rgba(242, 193, 78, 0.25);
+                color: var(--gold);
+            }
+            .gi-media > img {
+                position: absolute; inset: 0; width: 100%; height: 100%;
+                object-fit: cover; display: block;
+                transform: scale(1.1);
+                transition: transform 1.4s var(--gi-ease-out);
+            }
+            .gi-slide.is-active .gi-media > img { transform: scale(1); }
+            .gi-slide.is-active .gi-card:hover .gi-media > img { transform: scale(1.06); transition-duration: 0.9s; }
+            .gi-media > svg { width: 52px; height: 52px; flex: none; }
+            .gi-media-label {
+                font-family: var(--body);
+                font-weight: 700;
+                font-size: 12px;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--ink);
+                opacity: 0.85;
+            }
+
+            .gi-body { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 26px clamp(20px, 4vw, 36px) clamp(24px, 4vw, 34px); }
+            .gi-num {
+                position: absolute;
+                top: -22px; left: clamp(20px, 4vw, 36px);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 44px; height: 44px;
+                box-sizing: border-box;
+                padding: 0 8px;
+                border-radius: 999px;
+                border: 3px solid #0b1a12;
+                background: var(--gold);
+                font-family: var(--display);
+                font-weight: 900;
+                font-size: 18px;
+                line-height: 1;
+                color: #030906;
+                box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.7);
+            }
+            .gi-idea-title {
+                margin: 14px 0 0;
+                font-family: var(--display);
+                font-weight: 800;
+                font-size: clamp(22px, 3.4vw, 30px);
+                line-height: 1.2;
+                color: var(--gold);
+            }
+            .gi-text { margin: 0; font-family: var(--body); font-size: 16px; line-height: 1.65; color: var(--muted); }
+            .gi-lead { font-weight: 600; font-size: 18px; color: var(--ink); }
+            .gi-note { display: block; margin-top: 8px; }
+            .gi-desc {
+                margin: 4px 0 0;
+                padding: 14px 0 0 16px;
+                border-left: 3px solid #f25c4f;
+                font-family: var(--body);
+                font-size: 15.5px;
+                line-height: 1.65;
+                color: var(--ink);
+                opacity: 0.92;
+            }
+
+            .gi-controls {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 14px 16px;
+                margin: clamp(18px, 3vw, 26px) auto 0;
+                max-width: 760px;
+            }
+            .gi-mid { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+            .gi-counter { margin: 0; font-family: var(--body); font-weight: 700; font-size: 15px; letter-spacing: 0.08em; color: var(--muted); font-variant-numeric: tabular-nums; }
+            .gi-counter .gi-cur { color: var(--gold); }
+            .gi-btn {
+                flex: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 52px; height: 52px;
+                padding: 0;
+                border: 2px solid var(--gold);
+                border-radius: 50%;
+                background: #0f2a1d;
+                color: var(--gold);
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent;
+                transition: background-color 0.3s var(--gi-ease-out), color 0.3s var(--gi-ease-out), transform 0.3s var(--gi-ease-out), box-shadow 0.3s var(--gi-ease-out);
+            }
+            .gi-btn:hover { background: var(--gold); color: #0f2a1d; transform: scale(1.08); box-shadow: 0 8px 22px -8px rgba(242, 193, 78, 0.6); }
+            .gi-btn:active { transform: scale(0.95); }
+            .gi-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+            .gi-toggle { width: 44px; height: 44px; border-color: rgba(242, 193, 78, 0.5); }
+            .gi-toggle .i-play { display: none; }
+            .gi-toggle[aria-pressed="true"] .i-play { display: block; }
+            .gi-toggle[aria-pressed="true"] .i-pause { display: none; }
+            .gi-dots { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0; }
+            .gi-dot {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 20px; height: 28px;
+                padding: 0;
+                border: 0;
+                background: none;
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent;
+                transition: width 0.45s var(--gi-ease);
+            }
+            .gi-dot::before {
+                content: "";
+                width: 8px; height: 8px;
+                border-radius: 999px;
+                background: rgba(255, 246, 229, 0.3);
+                transition: width 0.45s var(--gi-ease), background-color 0.35s var(--gi-ease-out);
+            }
+            .gi-dot:hover::before { background: rgba(242, 193, 78, 0.7); }
+            .gi-dot.is-active { width: 34px; }
+            .gi-dot.is-active::before { width: 26px; background: var(--gold); }
+            .gi-dot:focus-visible { outline: 2px solid var(--gold); outline-offset: 0; border-radius: 8px; }
+
+            @media (max-width: 760px) {
+                .gi-title { text-align: center; }
+                .gi-opening { margin-left: auto; margin-right: auto; text-align: center; }
+            }
+            @media (max-width: 520px) {
+                .gi-controls { flex-wrap: wrap; }
+                .gi-mid { order: 4; flex: 1 1 100%; }
+                .gi-prev { order: 1; margin-right: auto; }
+                .gi-toggle { order: 2; }
+                .gi-next { order: 3; margin-left: auto; }
+                .gi-dot { width: 16px; }
+                .gi-dot.is-active { width: 28px; }
+                .gi-dot.is-active::before { width: 22px; }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .gi-track, .gi-slide, .gi-card, .gi-btn, .gi-dot, .gi-dot::before, .gi-media > img { transition: none !important; }
+                .gi-slide { opacity: 1; transform: none; }
+                .gi-media > img { transform: none !important; }
+            }
+
+            /* ---- Refined dark-emerald theme for the generosity section (matches the rest of the site) ---- */
+            .gi-section {
+                --gi-card: #0a1710;
+                --gi-card-hi: #0d1c14;
+                --gi-emerald: #0f2a1d;
+                --gi-gold: #e3b955;
+                --gi-gold-soft: rgba(227, 185, 85, 0.55);
+                --gi-ink: #f3ebd9;
+                --gi-body: rgba(243, 235, 217, 0.76);
+                --gi-rule: rgba(243, 235, 217, 0.13);
+                background-color: var(--bg);
+                background-image: none;
+                border-top: 1px solid var(--line);
+            }
+            .gi-title {
+                color: var(--gi-ink);
+                font-weight: 700;
+                letter-spacing: -0.015em;
+                padding-bottom: 18px;
+                position: relative;
+            }
+            .gi-title::after {
+                content: "";
+                position: absolute;
+                left: 0; bottom: 0;
+                width: 64px; height: 3px;
+                border-radius: 2px;
+                background: var(--gi-gold);
+            }
+            .gi-opening {
+                margin-top: 22px;
+                max-width: 38ch;
+                font-weight: 600;
+                color: var(--gi-gold);
+            }
+            .gi-opening span { color: var(--gi-body); font-weight: 500; }
+
+            .gi-video-ph {
+                border: 1px dashed var(--gi-gold-soft);
+                border-radius: 12px;
+                background: rgba(243, 235, 217, 0.03);
+            }
+            .gi-video-ph svg { color: var(--gi-gold); opacity: 0.8; }
+            .gi-video-ph p { color: var(--gi-body); font-weight: 500; }
+
+            .gi-viewport { border-radius: 16px; }
+            .gi-slide { opacity: 0.45; transform: scale(0.97); }
+            .gi-card {
+                border: 1px solid var(--gi-rule);
+                border-radius: 12px;
+                background: var(--gi-card);
+                box-shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.75);
+            }
+            .gi-card:hover {
+                border-color: var(--gi-gold-soft);
+                background: var(--gi-card-hi);
+                box-shadow: 0 20px 44px -16px rgba(0, 0, 0, 0.85);
+            }
+            .gi-media {
+                background: var(--gi-emerald);
+                border-bottom: 3px solid var(--gi-gold);
+                color: var(--gi-gold);
+            }
+            .gi-media-label { color: var(--gi-ink); opacity: 0.85; }
+            .gi-num {
+                background: var(--gi-gold);
+                border: 3px solid var(--gi-card);
+                color: #0a1710;
+                box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.7);
+            }
+            .gi-idea-title { color: var(--gi-gold); font-weight: 700; }
+            .gi-text { color: var(--gi-body); }
+            .gi-lead { color: var(--gi-ink); font-weight: 600; }
+            .gi-desc {
+                border-left: 3px solid var(--gi-gold-soft);
+                color: var(--gi-body);
+                opacity: 1;
+            }
+
+            .gi-counter { color: var(--gi-body); }
+            .gi-counter .gi-cur { color: var(--gi-gold); }
+            .gi-btn {
+                background: var(--gi-emerald);
+                border: 1.5px solid var(--gi-gold-soft);
+                color: var(--gi-gold);
+                box-shadow: none;
+            }
+            .gi-btn:hover {
+                background: var(--gi-gold);
+                border-color: var(--gi-gold);
+                color: #0a1710;
+                transform: translateY(-1px);
+                box-shadow: 0 8px 18px -8px rgba(0, 0, 0, 0.8);
+            }
+            .gi-btn:active { transform: translateY(0) scale(0.97); }
+            .gi-btn:focus-visible { outline: 3px solid var(--gi-ink); outline-offset: 3px; }
+            .gi-toggle { border-color: var(--gi-rule); }
+            .gi-dot::before { background: rgba(243, 235, 217, 0.25); }
+            .gi-dot:hover::before { background: var(--gi-gold-soft); }
+            .gi-dot.is-active::before { background: var(--gi-gold); }
+            .gi-dot:focus-visible { outline: 2px solid var(--gi-gold); }
+            .gi-viewport:focus-visible { outline: 3px solid var(--gi-gold); }
+            @media (max-width: 760px) {
+                .gi-title::after { left: 50%; transform: translateX(-50%); }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .gi-slide { opacity: 1; transform: none; }
+            }
+        </style>
+
         <header class="site" id="top">
             <div class="bar">
-                <a class="brand" href="#home" aria-label="Branta Claus, The Branti-establishment: home">
+                <a class="brand" href="#home" aria-label="brantaclaus.com, Branta Claus, The Branti-establishment: home">
                     <span class="logo" aria-hidden="true"
                         ><svg
                             width="18"
@@ -873,6 +1471,7 @@
                         >LOGO</span
                     >
                     <span class="brand-text">
+                        <span class="brand-domain">brantaclaus.com</span>
                         <span class="brand-name">Branta Claus</span>
                         <span class="brand-tag">The Branti-establishment</span>
                     </span>
@@ -944,6 +1543,232 @@
                                 <span>Enter the Branti-establishment</span>
                                 <span class="go" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
                             </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mc-elf" id="elf" aria-labelledby="elf-title">
+                <div class="mc-wrap">
+                    <div class="mc-grid">
+                        <h2 class="mc-title" id="elf-title">Meet Our Elf</h2>
+
+                        <div class="mc-video">
+                            <button type="button" class="mc-frame" id="mcFrame" aria-label="Play Mantra Claus video">
+                                <video class="mc-vid" id="mcVid" src="mantra-claus.mp4" poster="mantra-claus-poster.jpg" loop playsinline preload="metadata" disablepictureinpicture></video>
+                                <span class="mc-play" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.2v13.6a1 1 0 0 0 1.5.86l11-6.8a1 1 0 0 0 0-1.72l-11-6.8A1 1 0 0 0 8 5.2z"/></svg></span>
+                                <span class="mc-pause" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4.2" height="14" rx="1.2"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"/></svg></span>
+                            </button>
+                        </div>
+
+                        <p class="mc-text">It took us a long time to find our elf, <span class="mc-name">Mantra Claus</span>. There are a lot of <span class="mc-yesmen">yes-men</span> in the world today but not a lot of men who have the courage to just say <span class="mc-no">"NO!"</span> He's a good man. Since we're not giving anyone anything, he's all we need. Somehow, he finds time to take calls from around the world despite his busy schedule of milk &amp; cookies, cartoons, &amp; nap time. He tells people like it is when they ask us for stuff! BTW, you're not getting anything, either! Now, <span class="mc-turn">IT'S YOUR TURN TO GIVE!</span> <span class="mc-you">YOU</span> can join the <span class="mc-brigade">honorary elf brigade</span> by just helping someone in need with your time and/or $! 'Til we wreck or mend the status quo, <span class="mc-lead">I recommend the orgs below:</span></p>
+                    </div>
+
+                    <!--
+                        TEMPORARY EXAMPLES: everything inside #mcOrgs is placeholder content for testing.
+                        When Brant's curated list arrives:
+                          1. Delete the <li data-temp-example> cards below (or edit them in place).
+                          2. Add one <li class="mc-org-card"> per nonprofit inside the matching <ul>
+                             (copy any card as a template: name, description, Visit Website link).
+                          3. Delete this comment.
+                    -->
+                    <div class="mc-orgs" id="mcOrgs">
+                        <h3 class="mc-orgs-title">Recommended Nonprofits</h3>
+                        <div class="mc-org-groups">
+                            <div class="mc-org-group" data-group="faith-based">
+                                <h4 class="mc-org-heading">Faith-Based Organizations</h4>
+                                <ul class="mc-org-list">
+                                    <li class="mc-org-card" data-temp-example>
+                                        <h5 class="mc-org-name">Sample Faith-Based Organization</h5>
+                                        <p class="mc-org-desc">Placeholder description: a short leadership note or "bang for the buck" example goes here.</p>
+                                        <a class="mc-org-btn" href="#" target="_blank" rel="noopener noreferrer">Visit Website <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="mc-org-group" data-group="non-sectarian">
+                                <h4 class="mc-org-heading">Non-Sectarian Organizations</h4>
+                                <ul class="mc-org-list">
+                                    <li class="mc-org-card" data-temp-example>
+                                        <h5 class="mc-org-name">Heifer International</h5>
+                                        <p class="mc-org-desc">Placeholder description: a short leadership note or "bang for the buck" example goes here.</p>
+                                        <a class="mc-org-btn" href="https://www.heifer.org" target="_blank" rel="noopener noreferrer">Visit Website <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="gi-section" id="generosity" aria-labelledby="gi-title">
+                <div class="gi-wrap">
+                    <h2 class="gi-title" id="gi-title">Ideas for Generosity Without Spending Money</h2>
+                    <p class="gi-opening">Those who lack money can give of their time! <span>(I welcome suggestions.)</span></p>
+
+                    <!-- VIDEO SLOT: when the unsung-hero interviews are ready, replace the .gi-video-ph div with a <video> or <iframe>. -->
+                    <div class="gi-video">
+                        <div class="gi-video-ph" role="img" aria-label="Video interviews with unsung heroes coming soon">
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg>
+                            <p>Video interviews with unsung heroes coming soon</p>
+                        </div>
+                    </div>
+
+                    <div class="gi-carousel" id="giCarousel" role="region" aria-roledescription="carousel" aria-label="Ideas for generosity">
+                        <div class="gi-viewport" id="giViewport" tabindex="0">
+                            <div class="gi-track" id="giTrack" aria-live="off">
+                            <div class="gi-slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 1</span><img src="images/01-youth-tutoring-coaching.jpg" alt="" loading="eager" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">1</span>
+                                        <h3 class="gi-idea-title">Youth Tutoring &amp; Coaching</h3>
+                                        <p class="gi-text"><span class="gi-lead">Tutoring &amp; coaching sports teams for youth.</span></p>
+                                        <p class="gi-desc">Volunteer your time after school or on weekends to help kids with reading, math, homework, or basic drills and teamwork on a local field.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="2 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 2</span><img src="images/02-sharing-surplus-food.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">2</span>
+                                        <h3 class="gi-idea-title">Sharing Surplus Food &amp; Essentials</h3>
+                                        <p class="gi-text"><span class="gi-lead">Take food &amp; other items to the homeless which you would otherwise throw away.</span> <span class="gi-note">(This could be a first step toward breaking the ice with someone who has few resources or options in life.)</span></p>
+                                        <p class="gi-desc">Pack clean, unspoiled leftover food or usable household items you would otherwise discard and offer them respectfully as a simple, human way to start a conversation.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="3 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 3</span><img src="images/03-helping-with-id.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">3</span>
+                                        <h3 class="gi-idea-title">Helping With an I.D. Card</h3>
+                                        <p class="gi-text"><span class="gi-lead">Help a homeless person get an I.D.</span> <span class="gi-note">(Oftentimes, the only thing keeping the homeless from employment is an I.D. Card.)</span></p>
+                                        <p class="gi-desc">Walk alongside someone through the paperwork, transportation, and local office steps needed to obtain an official I.D. that can unlock job opportunities.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="4 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 4</span><img src="images/04-lending-library-books.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">4</span>
+                                        <h3 class="gi-idea-title">Print-List Lending Library</h3>
+                                        <p class="gi-text"><span class="gi-lead">Start a lending library for the homeless.</span> <span class="gi-note">(Because it is sometimes difficult to find an outlet where a phone can be charged, they are not inclined to read books online. Many would enjoy hardcopy books. Rather than turn your car into a bookmobile, print a list of available titles &amp; deliver upon request. Expect that many books will be lost or damaged, but this kind of thing will bring the homeless in touch with something that feels like mainstream society.)</span></p>
+                                        <p class="gi-desc">Gather spare physical books, print a simple catalog of what you have on hand, and bring requested titles directly to people while holding losses lightly as part of genuine connection.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="5 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 5</span><img src="images/05-mentoring-child.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">5</span>
+                                        <h3 class="gi-idea-title">Mentoring a Prisoner's Child</h3>
+                                        <p class="gi-text"><span class="gi-lead">Take the child of a prisoner to hang out with you &amp; your kid.</span></p>
+                                        <p class="gi-desc">Include a child affected by a parent's incarceration in everyday family outings, play, and normal routines so they feel welcomed, supported, and not forgotten.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="6 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 6</span><img src="images/06-childrens-hospital-visit.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">6</span>
+                                        <h3 class="gi-idea-title">Children's Hospital Clown Visit</h3>
+                                        <p class="gi-text"><span class="gi-lead">Dress up like a clown &amp; visit a children’s hospital.</span> <span class="gi-note">(They nor their parents will ever forget that in their desperate time of need.)</span></p>
+                                        <p class="gi-desc">Coordinate with hospital guidelines to bring lightheartedness, silly moments, and warmth to kids and exhausted parents going through a stressful stay.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="7 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 7</span><img src="images/07-nursing-home-friendship.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">7</span>
+                                        <h3 class="gi-idea-title">Nursing Home Friendship</h3>
+                                        <p class="gi-text"><span class="gi-lead">Visit a nursing home &amp; get to know one person in need of a friend.</span></p>
+                                        <p class="gi-desc">Spend unhurried time listening to stories, chatting, or keeping company with a resident who rarely gets visitors and longs for consistent friendship.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="8 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 8</span><img src="images/08-disability-support.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">8</span>
+                                        <h3 class="gi-idea-title">Practical Help for Someone With a Disability</h3>
+                                        <p class="gi-text"><span class="gi-lead">Help a disabled person.</span></p>
+                                        <p class="gi-desc">Offer steady, practical assistance with errands, household tasks, mobility, or daily routines—always asking first and respecting their independence.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="9 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 9</span><img src="images/09-survivor-support.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">9</span>
+                                        <h3 class="gi-idea-title">Personal Support After Trafficking &amp; Exploitation</h3>
+                                        <p class="gi-text"><span class="gi-lead">Work personally with those coming out of sex trafficking &amp; modern slavery.</span> <span class="gi-note">(Don't just do politics. Remember: Politics is ineffective.)</span></p>
+                                        <p class="gi-desc">Partner with trusted local support efforts to show up consistently with personal care, encouragement, and practical help for survivors rebuilding their lives.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="10 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 10</span><img src="images/10-addiction-recovery-support.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">10</span>
+                                        <h3 class="gi-idea-title">Walking Alongside Addiction Recovery</h3>
+                                        <p class="gi-text"><span class="gi-lead">Help walk someone out of chemical dependency, alcoholism or other destructive addictions.</span></p>
+                                        <p class="gi-desc">Be a steady, accountable presence who listens without judgment, encourages healthy habits, and supports someone day by day on the road to recovery.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="11 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 11</span><img src="images/11-prison-visitation.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">11</span>
+                                        <h3 class="gi-idea-title">Prison Visitation</h3>
+                                        <p class="gi-text"><span class="gi-lead">Visit a prisoner.</span></p>
+                                        <p class="gi-desc">Follow facility rules and approved programs to offer genuine human conversation, dignity, and encouragement to someone behind bars.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="12 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 12</span><img src="images/12-hiring-second-chance.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">12</span>
+                                        <h3 class="gi-idea-title">Hiring an Ex-Prisoner</h3>
+                                        <p class="gi-text"><span class="gi-lead">Hire an ex-prisoner.</span></p>
+                                        <p class="gi-desc">Give someone with a past record a real chance at honest work, training, and a fresh start where effort and character are judged fairly.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            <div class="gi-slide" role="group" aria-roledescription="slide" aria-label="13 of 13">
+                                <article class="gi-card">
+                                    <div class="gi-media"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg><span class="gi-media-label">Idea 13</span><img src="images/13-teaching-english.jpg" alt="" loading="lazy" decoding="async"></div>
+                                    <div class="gi-body">
+                                        <span class="gi-num" aria-hidden="true">13</span>
+                                        <h3 class="gi-idea-title">Teaching English to an Immigrant</h3>
+                                        <p class="gi-text"><span class="gi-lead">Teach English to an immigrant.</span></p>
+                                        <p class="gi-desc">Practice everyday conversation, vocabulary, and confidence-building one-on-one so a newcomer can navigate work, school, and community life more easily.</p>
+                                    </div>
+                                </article>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="gi-controls">
+                            <button class="gi-btn gi-prev" type="button" aria-label="Previous idea"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+                            <div class="gi-mid">
+                                <p class="gi-counter" aria-live="polite"><span class="gi-cur">1</span> / 13</p>
+                                <div class="gi-dots" id="giDots" role="group" aria-label="Choose slide"></div>
+                            </div>
+                            <button class="gi-btn gi-next" type="button" aria-label="Next idea"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+                            <button class="gi-btn gi-toggle" type="button" aria-pressed="false" aria-label="Pause autoplay"><svg class="i-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1"/><rect x="13.8" y="5" width="4.2" height="14" rx="1"/></svg><svg class="i-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button>
                         </div>
                     </div>
                 </div>
@@ -1021,6 +1846,161 @@
                 document.addEventListener("keydown", function (e) {
                     if (e.key === "Escape") setMenu(false);
                 });
+            })();
+        </script>
+
+        <script>
+            /* Meet Our Elf video: no autoplay; click to play (with sound) and loop; click again to pause. */
+            (function () {
+                var frame = document.getElementById("mcFrame");
+                var v = document.getElementById("mcVid");
+                if (!frame || !v) return;
+                var raf = 0;
+                var EARLY = 0.06; /* restart just before the last frame so the loop never flashes black */
+                function ui(playing) {
+                    frame.classList.toggle("is-playing", playing);
+                    frame.setAttribute("aria-label", playing ? "Pause Mantra Claus video" : "Play Mantra Claus video");
+                }
+                function tick() {
+                    if (v.duration && v.currentTime >= v.duration - EARLY) v.currentTime = 0;
+                    raf = requestAnimationFrame(tick);
+                }
+                v.addEventListener("play", function () { ui(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); });
+                v.addEventListener("pause", function () { ui(false); cancelAnimationFrame(raf); });
+                v.addEventListener("ended", function () { v.currentTime = 0; v.play().catch(function () { ui(false); }); });
+                frame.addEventListener("click", function () {
+                    if (v.paused) {
+                        v.muted = false;
+                        var p = v.play();
+                        if (p && p.catch) p.catch(function () { ui(false); });
+                    } else {
+                        v.pause();
+                    }
+                });
+            })();
+        </script>
+        <script>
+            /* Generosity carousel: one card at a time, translate-based slide, arrows, dots, counter, swipe/drag, autoplay. */
+            (function () {
+                var root = document.getElementById("giCarousel");
+                if (!root) return;
+                var viewport = root.querySelector(".gi-viewport");
+                var track = root.querySelector(".gi-track");
+                var slides = Array.prototype.slice.call(track.children);
+                var N = slides.length;
+                var prevBtn = root.querySelector(".gi-prev");
+                var nextBtn = root.querySelector(".gi-next");
+                var toggle = root.querySelector(".gi-toggle");
+                var dotsBox = root.querySelector(".gi-dots");
+                var curEl = root.querySelector(".gi-cur");
+                var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+                var DELAY = 5500, RESUME = 9000;
+                var idx = 0, hovering = false, focused = false, touching = false;
+                var userPaused = reduce, resumeAt = 0, inView = true, dots = [];
+
+                /* image fallback: if a photo fails, remove it so the emerald/gold placeholder shows */
+                Array.prototype.forEach.call(root.querySelectorAll(".gi-media > img"), function (img) {
+                    img.addEventListener("error", function () { if (img.parentNode) img.parentNode.removeChild(img); });
+                });
+
+                for (var i = 0; i < N; i++) {
+                    (function (i) {
+                        var b = document.createElement("button");
+                        b.type = "button"; b.className = "gi-dot";
+                        b.setAttribute("aria-label", "Go to slide " + (i + 1));
+                        b.addEventListener("click", function () { hold(); goTo(i); });
+                        dotsBox.appendChild(b); dots.push(b);
+                    })(i);
+                }
+
+                function render() {
+                    track.style.transform = "translate3d(" + (-idx * 100) + "%,0,0)";
+                    for (var i = 0; i < N; i++) {
+                        var on = i === idx;
+                        slides[i].classList.toggle("is-active", on);
+                        if (on) slides[i].removeAttribute("aria-hidden"); else slides[i].setAttribute("aria-hidden", "true");
+                        if ("inert" in slides[i]) slides[i].inert = !on;
+                        dots[i].classList.toggle("is-active", on);
+                        if (on) dots[i].setAttribute("aria-current", "true"); else dots[i].removeAttribute("aria-current");
+                    }
+                    curEl.textContent = idx + 1;
+                }
+                function goTo(i) { idx = ((i % N) + N) % N; render(); }
+                function hold() { resumeAt = Date.now() + RESUME; }
+
+                prevBtn.addEventListener("click", function () { hold(); goTo(idx - 1); });
+                nextBtn.addEventListener("click", function () { hold(); goTo(idx + 1); });
+                viewport.addEventListener("keydown", function (e) {
+                    if (e.key === "ArrowLeft") { e.preventDefault(); hold(); goTo(idx - 1); }
+                    if (e.key === "ArrowRight") { e.preventDefault(); hold(); goTo(idx + 1); }
+                });
+
+                /* swipe / drag (touch, pen, mouse) with the card following the finger */
+                var sx = 0, sy = 0, dx = 0, dragging = false, decided = false, horizontal = false, pid = null;
+                viewport.addEventListener("pointerdown", function (e) {
+                    if (e.pointerType === "mouse" && e.button !== 0) return;
+                    if (e.target.closest && e.target.closest("button")) return;
+                    sx = e.clientX; sy = e.clientY; dx = 0; dragging = true; decided = false; horizontal = false; pid = e.pointerId;
+                    if (e.pointerType !== "mouse") { touching = true; }
+                    hold();
+                });
+                viewport.addEventListener("pointermove", function (e) {
+                    if (!dragging || e.pointerId !== pid) return;
+                    var mx = e.clientX - sx, my = e.clientY - sy;
+                    if (!decided && (Math.abs(mx) > 8 || Math.abs(my) > 8)) {
+                        decided = true; horizontal = Math.abs(mx) > Math.abs(my);
+                        if (horizontal) {
+                            try { viewport.setPointerCapture(pid); } catch (x) {}
+                            track.classList.add("is-drag"); viewport.classList.add("is-drag");
+                        }
+                    }
+                    if (horizontal) {
+                        dx = mx;
+                        var w = viewport.clientWidth || 1;
+                        track.style.transform = "translate3d(calc(" + (-idx * 100) + "% + " + dx + "px),0,0)";
+                    }
+                });
+                function endDrag(e) {
+                    if (!dragging || (e && e.pointerId !== pid)) return;
+                    dragging = false; touching = false; hold();
+                    track.classList.remove("is-drag"); viewport.classList.remove("is-drag");
+                    try { viewport.releasePointerCapture(pid); } catch (x) {}
+                    var w = viewport.clientWidth || 1;
+                    if (horizontal && Math.abs(dx) > Math.min(80, w * 0.15)) goTo(idx + (dx < 0 ? 1 : -1));
+                    else render();
+                    horizontal = false; dx = 0;
+                }
+                viewport.addEventListener("pointerup", endDrag);
+                viewport.addEventListener("pointercancel", endDrag);
+                viewport.addEventListener("dragstart", function (e) { e.preventDefault(); });
+
+                /* pause rules: hover, keyboard focus, touch, off-screen, hidden tab, user toggle */
+                root.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hovering = true; });
+                root.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") hovering = false; });
+                root.addEventListener("focusin", function (e) { try { focused = e.target.matches(":focus-visible"); } catch (x) { focused = true; } });
+                root.addEventListener("focusout", function () { focused = false; });
+
+                toggle.addEventListener("click", function () {
+                    userPaused = !userPaused;
+                    toggle.setAttribute("aria-pressed", userPaused ? "true" : "false");
+                    toggle.setAttribute("aria-label", userPaused ? "Play autoplay" : "Pause autoplay");
+                    if (!userPaused) resumeAt = 0;
+                });
+                if (reduce) {
+                    toggle.setAttribute("aria-pressed", "true");
+                    toggle.setAttribute("aria-label", "Play autoplay");
+                }
+                if ("IntersectionObserver" in window) {
+                    new IntersectionObserver(function (en) { inView = en[0].isIntersecting; }, { threshold: 0.25 }).observe(root);
+                }
+                setInterval(function () {
+                    if (userPaused || hovering || focused || touching || dragging || !inView || document.hidden) return;
+                    if (Date.now() < resumeAt) return;
+                    goTo(idx + 1);
+                }, DELAY);
+
+                render();
             })();
         </script>
     </body>
