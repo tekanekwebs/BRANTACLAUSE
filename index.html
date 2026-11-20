@@ -51,7 +51,7 @@
                 --red-hot: #f25c4f;
                 --gold: #f2c14e;
                 --line: rgba(255, 246, 229, 0.16);
-                --display: "Fraunces", Georgia, serif;
+                --display: "Cloister Black", "UnifrakturCook", "Old English Text MT", "IM Fell English SC", Georgia, serif;
                 --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
                 --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
                 --bar: 78px;
@@ -851,6 +851,28 @@
             .spd-opts:not([hidden]) { animation: spdin 0.25s var(--ease) both; }
             @keyframes spdin { from { opacity: 0; transform: translateY(-4px) scale(0.96); } to { opacity: 1; transform: none; } }
             @media (max-width: 1099px) { .spd-t { font-size: 11px; } }
+
+            /* ---------- speed button: sits just below the video, and is clickable ---------- */
+            /* nudge --spd-top / --spd-right to move it */
+            .m-branta { --spd-top: calc(100% + 14px); --spd-right: 7%; }
+            .spd { top: var(--spd-top); right: var(--spd-right); margin-top: 0; z-index: 6; }
+            @media (min-width: 1100px) { .spd { right: var(--spd-right); } }
+            /* hero text blocks sit above the video in stacking order and were swallowing clicks; let clicks pass through them */
+            .santa, .branta, .unit { pointer-events: none; }
+            .unit a, .unit button { pointer-events: auto; }
+
+            /* ---------- no play-button overlay on the Branta video ---------- */
+            .bv::-webkit-media-controls,
+            .bv::-webkit-media-controls-start-playback-button,
+            .bv::-webkit-media-controls-overlay-play-button,
+            .bv::-webkit-media-controls-panel,
+            .bv::-webkit-media-controls-enclosure { display: none !important; -webkit-appearance: none; opacity: 0 !important; }
+
+            /* ---------- Old English / Blackletter for all text ---------- */
+            html, body, body *, body *::before, body *::after,
+            button, input, textarea, select {
+                font-family: "Cloister Black", "UnifrakturCook", "Old English Text MT", "IM Fell English SC", Georgia, serif !important;
+            }
         </style>
 
         <style id="elf-css">
@@ -1571,8 +1593,8 @@
             /* brigade note */
             .eb-note {
                 max-width: 62ch;
-                margin: 20px 0 0;
-                padding: 14px 18px;
+                margin: 36px 0 36px;
+                padding: 18px 22px;
                 border-left: 3px solid var(--gold);
                 border-radius: 0 12px 12px 0;
                 background: rgba(242, 193, 78, 0.07);
@@ -1711,7 +1733,7 @@
                     <div class="content">
                         <div class="copy">
                             <div class="m-branta" id="brantaVid">
-                                <video class="bv" src="branta-clause-vids.mp4" autoplay loop muted playsinline preload="auto" disablepictureinpicture aria-label="Branta Claus wagging his finger: no"></video>
+                                <video class="bv" src="branta-clause-vids.mp4" autoplay loop muted playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback tabindex="-1" controlslist="nodownload nofullscreen noremoteplayback" aria-label="Branta Claus wagging his finger: no"></video>
                                 <div class="spd" role="group" aria-label="Finger speed">
                                     <button type="button" class="spd-t" aria-expanded="false" aria-haspopup="true" aria-label="Adjust Branta's finger-wagging speed! Current speed: Normal"><span class="spd-cur">Adjust Branta's finger-wagging speed!</span><svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                                     <div class="spd-opts" hidden>
@@ -1783,7 +1805,7 @@
             <section class="mc-elf rt-section" id="b-rants" aria-labelledby="rants-title">
                 <div class="mc-wrap st-wrap rt-wrap">
                     <h2 class="mc-title rt-title" id="rants-title">B-Rants</h2>
-                    <p class="rt-intro">Essays by Brant, on whatever is bugging him. New ones are on the way.</p>
+                    <p class="rt-intro">essays and rants written by Branta Claus&hellip;.. Others are welcome to sent rants, which may be posted. New ones are on the way.</p>
 
                     <!--
                         ADDING AN ESSAY: copy the <article class="rt-essay"> template below into .rt-list (newest first),
@@ -1819,7 +1841,7 @@
                              (copy any card as a template: name, description, Visit Website link).
                           3. Delete this comment.
                     -->
-                    <div class="mc-orgs" id="mcOrgs">
+                    <div class="mc-orgs" id="mcOrgs" hidden>
                         <h3 class="mc-orgs-title">Recommended Nonprofits</h3>
                         <div class="mc-org-groups">
                             <div class="mc-org-group" data-group="faith-based">
@@ -2078,7 +2100,9 @@
                 });
                 v.addEventListener("loadedmetadata", apply);
                 v.addEventListener("playing", apply);
+                v.controls = false; v.removeAttribute("controls");
                 var p = v.play(); if (p && p.catch) p.catch(function () {});
+                ["touchstart", "click", "scroll"].forEach(function (ev) { document.addEventListener(ev, function () { if (v.paused) v.play().catch(function () {}); }, { once: true, passive: true }); });
                 document.addEventListener("visibilitychange", function () { if (!document.hidden && v.paused) v.play().catch(function () {}); });
             })();
 
