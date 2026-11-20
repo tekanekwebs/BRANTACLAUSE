@@ -1,12 +1,12 @@
 <!doctype html>
-<html>
+<html lang="en" style="background:#091510">
     <head>
-        <meta charset="utf8" />
+        <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
         <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet" />
         <style>
             :root {
-                color-scheme: light;
+                color-scheme: dark;
                 box-sizing: border-box;
                 padding-top: env(safe-area-inset-top, 0px);
                 padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -21,8 +21,8 @@
                     14px -apple-system,
                     BlinkMacSystemFont,
                     sans-serif;
-                background: #fff;
-                color: #000;
+                background: #091510;
+                color: #fff6e5;
             }
             img {
                 max-width: 100%;
@@ -1451,6 +1451,201 @@
             }
         </style>
 
+        <style id="sections-css">
+            /* New sections (story, B-Rants, Elf Brigade). They reuse the .mc-elf dark panel and .mc-wrap gutters. */
+            @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+            .st-wrap { max-width: 820px; }
+            .st-title { text-align: center; }
+            .st-title span { display: block; }
+            .st-main { font-size: 1em; line-height: 1.05; }
+            .st-sub, .st-novel {
+                font-family: var(--display);
+                font-weight: 700;
+                font-size: clamp(18px, 2.6vw, 26px);
+                line-height: 1.3;
+                color: var(--gold);
+            }
+            .st-sub { margin-top: 14px; }
+            .st-novel { font-style: italic; font-weight: 600; color: var(--muted); }
+            .st-body { margin-top: clamp(24px, 4vw, 40px); }
+            .st-p {
+                margin: 0 0 1.2em;
+                font-family: var(--body);
+                font-weight: 500;
+                font-size: clamp(17px, 1.5vw, 19px);
+                line-height: 1.75;
+                color: var(--ink);
+            }
+            .st-placeholder, .rt-empty {
+                margin: 0;
+                padding: clamp(28px, 5vw, 48px) 24px;
+                text-align: center;
+                border: 1px dashed rgba(242, 193, 78, 0.38);
+                border-radius: 18px;
+                background: rgba(255, 246, 229, 0.03);
+                font-family: var(--display);
+                font-style: italic;
+                font-weight: 600;
+                font-size: clamp(17px, 2vw, 20px);
+                color: var(--muted);
+            }
+
+            .rt-wrap { max-width: 820px; }
+            .rt-title { text-align: left; }
+            .rt-intro { margin: 14px 0 0; max-width: 62ch; font-size: clamp(16px, 1.5vw, 18px); line-height: 1.6; color: var(--muted); }
+            .rt-list { display: grid; gap: 18px; margin-top: clamp(24px, 4vw, 40px); }
+            .rt-list:has(.rt-essay) .rt-empty { display: none; }
+            .rt-essay {
+                box-sizing: border-box;
+                padding: clamp(20px, 3vw, 30px);
+                border: 1px solid var(--line);
+                border-radius: 16px;
+                background: rgba(255, 246, 229, 0.05);
+            }
+            .rt-essay-title { margin: 0; font-family: var(--display); font-weight: 900; font-size: clamp(22px, 3vw, 30px); line-height: 1.15; color: var(--ink); }
+            .rt-essay-date { margin: 8px 0 14px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
+            .rt-essay p:not(.rt-essay-date) { margin: 0 0 1.1em; font-size: 17px; line-height: 1.75; color: var(--ink); }
+            .rt-essay p:last-child { margin-bottom: 0; }
+
+            .eb-title { text-align: left; }
+            .eb-lead { margin-top: 16px; }
+            .eb-section .mc-orgs { margin-top: clamp(24px, 4vw, 40px); }
+
+            @media (max-width: 860px) {
+                .eb-title, .rt-title { text-align: center; }
+                .rt-intro, .eb-lead { margin-left: auto; margin-right: auto; text-align: center; }
+            }
+        </style>
+
+        <style id="polish-css">
+            /* Cohesion pass: whole page stays dark (hero and header untouched). */
+            html { background: var(--bg); }
+
+            /* title accent rule, same gold bar the generosity section uses */
+            #elf-title::after, .st-title::after, .rt-title::after, .eb-title::after {
+                content: "";
+                display: block;
+                width: 64px;
+                height: 3px;
+                margin-top: 18px;
+                border-radius: 2px;
+                background: var(--gold);
+            }
+            .st-title::after { margin-left: auto; margin-right: auto; }
+            @media (max-width: 860px) {
+                #elf-title::after, .rt-title::after, .eb-title::after { margin-left: auto; margin-right: auto; }
+            }
+
+            /* cards: one border/radius/hover language across nonprofits, essays and group panels */
+            .mc-org-group {
+                border-color: rgba(242, 193, 78, 0.24);
+                background: linear-gradient(180deg, rgba(255, 246, 229, 0.05), rgba(255, 246, 229, 0.02));
+            }
+            .mc-org-card, .rt-essay {
+                border-color: rgba(255, 246, 229, 0.14);
+                transition: border-color 0.3s var(--ease), background 0.3s var(--ease), transform 0.3s var(--ease);
+            }
+            .mc-org-card:hover, .rt-essay:hover {
+                border-color: rgba(242, 193, 78, 0.5);
+                background: rgba(255, 246, 229, 0.075);
+                transform: translateY(-2px);
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .mc-org-card:hover, .rt-essay:hover { transform: none; }
+            }
+
+            /* buttons: gold outline on dark, fills gold on hover */
+            .mc-org-btn {
+                background: transparent;
+                color: var(--gold);
+                box-shadow: inset 0 0 0 1.5px rgba(242, 193, 78, 0.6);
+                transition: background-color 0.25s var(--ease), color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+            }
+            .mc-org-btn:hover {
+                background: var(--gold);
+                color: var(--bg);
+                box-shadow: inset 0 0 0 1.5px var(--gold), 0 8px 20px rgba(242, 193, 78, 0.18);
+            }
+
+            /* brigade note */
+            .eb-note {
+                max-width: 62ch;
+                margin: 20px 0 0;
+                padding: 14px 18px;
+                border-left: 3px solid var(--gold);
+                border-radius: 0 12px 12px 0;
+                background: rgba(242, 193, 78, 0.07);
+                font-size: 15.5px;
+                line-height: 1.6;
+                color: var(--ink);
+            }
+            .eb-note strong { color: var(--gold); }
+            @media (max-width: 860px) { .eb-note { margin-left: auto; margin-right: auto; } }
+
+            /* ---------- footer ---------- */
+            .ft {
+                position: relative;
+                background: #050d09;
+                border-top: 1px solid rgba(242, 193, 78, 0.28);
+                color: var(--muted);
+                font-family: var(--body);
+            }
+            .ft::before {
+                content: "";
+                position: absolute;
+                inset: 0 0 auto;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--gold), transparent);
+                opacity: 0.55;
+            }
+            .ft-wrap, .ft-bar-in {
+                max-width: 1100px;
+                margin: 0 auto;
+                box-sizing: border-box;
+                padding-left: max(clamp(20px, 5vw, 48px), env(safe-area-inset-left, 0px));
+                padding-right: max(clamp(20px, 5vw, 48px), env(safe-area-inset-right, 0px));
+            }
+            .ft-wrap { padding-top: clamp(40px, 6vw, 72px); padding-bottom: clamp(32px, 5vw, 56px); }
+            .ft-grid {
+                display: grid;
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+                gap: clamp(28px, 5vw, 64px);
+            }
+            .ft-name { margin: 0; font-family: var(--display); font-weight: 900; font-size: 28px; line-height: 1.1; color: var(--ink); }
+            .ft-tag { display: block; margin-top: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red-hot); }
+            .ft-h { margin: 0 0 14px; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+            .ft-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+            .ft-list a {
+                display: inline-block;
+                padding: 6px 0;
+                color: var(--muted);
+                text-decoration: none;
+                transition: color 0.25s var(--ease);
+            }
+            .ft-list a:hover { color: var(--ink); text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 5px; }
+            .ft-bar { border-top: 1px solid var(--line); }
+            .ft-bar-in {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                gap: 10px 32px;
+                padding-top: 18px;
+                padding-bottom: max(18px, env(safe-area-inset-bottom, 0px));
+                font-size: 13.5px;
+                line-height: 1.55;
+            }
+            .ft-bar-in p { margin: 0; }
+            .ft-bar-in a { color: var(--gold); text-underline-offset: 3px; }
+            .ft-bar-in a:hover { color: var(--ink); }
+            @media (max-width: 860px) {
+                .ft-grid { grid-template-columns: minmax(0, 1fr); }
+            }
+            @media (max-width: 560px) {
+                .ft-bar-in { flex-direction: column; }
+            }
+        </style>
+
         <header class="site" id="top">
             <div class="bar">
                 <a class="brand" href="#home" aria-label="brantaclaus.com, Branta Claus, The Branti-establishment: home">
@@ -1498,11 +1693,11 @@
                 </button>
                 <nav class="menu" id="menu" aria-label="Primary">
                     <a href="#home" aria-current="true">Home</a>
-                    <a href="#story">The Story</a>
+                    <a href="#story" title="The Miracle of Branta Claus. A Bedtime Story. (A very novel novel)">The Miracle</a>
                     <a href="#elf">Meet Our Elf</a>
                     <a href="#gallery">Gallery</a>
                     <a href="#b-rants">B-Rants</a>
-                    <a href="#nonprofits">Worthy Nonprofits</a>
+                    <a href="#brigade" title="Join the Honorary Elf Brigade">Elf Brigade</a>
                 </nav>
             </div>
         </header>
@@ -1548,6 +1743,24 @@
                 </div>
             </section>
 
+            <section class="mc-elf st-section" id="story" aria-labelledby="story-title" tabindex="-1">
+                <div class="mc-wrap st-wrap">
+                    <h2 class="mc-title st-title" id="story-title">
+                        <span class="st-main">The Miracle of Branta Claus.</span>
+                        <span class="st-sub">A Bedtime Story.</span>
+                        <span class="st-novel">(A very novel novel)</span>
+                    </h2>
+
+                    <!--
+                        STORY TEXT GOES HERE: delete the .st-placeholder paragraph below and paste the story as
+                        <p class="st-p">...</p> paragraphs inside .st-body (one <p> per paragraph).
+                    -->
+                    <div class="st-body">
+                        <p class="st-placeholder">Here will be the bedtime story, once it&rsquo;s tucked in.</p>
+                    </div>
+                </div>
+            </section>
+
             <section class="mc-elf" id="elf" aria-labelledby="elf-title">
                 <div class="mc-wrap">
                     <div class="mc-grid">
@@ -1561,8 +1774,42 @@
                             </button>
                         </div>
 
-                        <p class="mc-text">It took us a long time to find our elf, <span class="mc-name">Mantra Claus</span>. There are a lot of <span class="mc-yesmen">yes-men</span> in the world today but not a lot of men who have the courage to just say <span class="mc-no">"NO!"</span> He's a good man. Since we're not giving anyone anything, he's all we need. Somehow, he finds time to take calls from around the world despite his busy schedule of milk &amp; cookies, cartoons, &amp; nap time. He tells people like it is when they ask us for stuff! BTW, you're not getting anything, either! Now, <span class="mc-turn">IT'S YOUR TURN TO GIVE!</span> <span class="mc-you">YOU</span> can join the <span class="mc-brigade">honorary elf brigade</span> by just helping someone in need with your time and/or $! 'Til we wreck or mend the status quo, <span class="mc-lead">I recommend the orgs below:</span></p>
+                        <p class="mc-text">It took us a long time to find our elf, <span class="mc-name">Mantra Claus</span>. There are a lot of <span class="mc-yesmen">yes-men</span> in the world today but not a lot of men who have the courage to just say <span class="mc-no">"NO!"</span> He's a good man. Since we're not giving anyone anything, he's all we need. Somehow, he finds time to take calls from around the world despite his busy schedule of milk &amp; cookies, cartoons, &amp; nap time. He tells people like it is when they ask us for stuff!  BTW, you're not getting anything, either! Now, <span class="mc-turn">IT'S YOUR TURN TO GIVE!</span> <span class="mc-you">YOU</span> can join the <span class="mc-brigade">honorary elf brigade</span> by just helping someone in need with your time and/or $!</p>
                     </div>
+
+                </div>
+            </section>
+
+            <section class="mc-elf rt-section" id="b-rants" aria-labelledby="rants-title">
+                <div class="mc-wrap st-wrap rt-wrap">
+                    <h2 class="mc-title rt-title" id="rants-title">B-Rants</h2>
+                    <p class="rt-intro">Essays by Brant, on whatever is bugging him. New ones are on the way.</p>
+
+                    <!--
+                        ADDING AN ESSAY: copy the <article class="rt-essay"> template below into .rt-list (newest first),
+                        fill in the title, date and paragraphs, and delete the comment markers around your copy.
+                        The "Here will be..." card hides itself automatically once an essay exists
+                        (older browsers: delete the .rt-empty paragraph by hand).
+                    -->
+                    <div class="rt-list" id="rtList">
+                        <p class="rt-empty">Here will be Brant&rsquo;s upcoming essays, one rant at a time.</p>
+                        <!--
+                        <article class="rt-essay">
+                            <h3 class="rt-essay-title">Essay title</h3>
+                            <p class="rt-essay-date">Month D, YYYY</p>
+                            <p>First paragraph of the essay.</p>
+                            <p>Second paragraph of the essay.</p>
+                        </article>
+                        -->
+                    </div>
+                </div>
+            </section>
+
+            <section class="mc-elf eb-section" id="brigade" aria-labelledby="brigade-title">
+                <div class="mc-wrap">
+                    <h2 class="mc-title eb-title" id="brigade-title">Join the Honorary Elf Brigade</h2>
+                    <p class="mc-text eb-lead">'Til we wreck or mend the status quo, <span class="mc-lead">I recommend the orgs below:</span></p>
+                    <p class="eb-note" role="note"><strong>A note on the list:</strong> the charities and nonprofits featured here are never charged to be listed. Know an organization that deserves a spot? Suggestions for other organizations are welcome.</p>
 
                     <!--
                         TEMPORARY EXAMPLES: everything inside #mcOrgs is placeholder content for testing.
@@ -1607,9 +1854,9 @@
 
                     <!-- VIDEO SLOT: when the unsung-hero interviews are ready, replace the .gi-video-ph div with a <video> or <iframe>. -->
                     <div class="gi-video">
-                        <div class="gi-video-ph" role="img" aria-label="Video interviews with unsung heroes coming soon">
+                        <div class="gi-video-ph" role="img" aria-label="Here will be video interviews with unsung heroes">
                             <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M10 8.5v7l6-3.5z" fill="currentColor" stroke="none"/></svg>
-                            <p>Video interviews with unsung heroes coming soon</p>
+                            <p>Here will be video interviews with unsung heroes.</p>
                         </div>
                     </div>
 
@@ -1774,6 +2021,36 @@
                 </div>
             </section>
         </main>
+
+        <footer class="ft" aria-label="Site footer">
+            <div class="ft-wrap">
+                <div class="ft-grid">
+                    <div class="ft-brand">
+                        <p class="ft-name">Branta Claus</p>
+                        <span class="ft-tag">The Branti-Establishment</span>
+                    </div>
+
+                    <nav aria-label="Footer">
+                        <h2 class="ft-h">Explore</h2>
+                        <ul class="ft-list">
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#story">The Miracle</a></li>
+                            <li><a href="#elf">Meet Our Elf</a></li>
+                            <li><a href="#gallery">Gallery</a></li>
+                            <li><a href="#b-rants">B-Rants</a></li>
+                            <li><a href="#brigade">Join the Honorary Elf Brigade</a></li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+            <div class="ft-bar">
+                <div class="ft-bar-in">
+                    <p>Listed charities and nonprofits are never charged to be featured.</p>
+                    <p><a href="claus-family.html">Claus Family</a></p>
+                </div>
+            </div>
+        </footer>
 
         <script>
             (function () {
@@ -2001,6 +2278,55 @@
                 }, DELAY);
 
                 render();
+            })();
+        </script>
+        <script>
+            /* Enter the Branti-establishment: smoothly glides from the hero into the main content, clear of the sticky header. */
+            (function () {
+                var btn = document.querySelector("a.bubble[href='#story']");
+                var target = document.getElementById("story");
+                if (!btn || !target) return;
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    var hdr = document.querySelector(".site");
+                    var offset = (hdr ? hdr.offsetHeight : 78) + 8;
+                    var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    try { window.scrollTo({ top: top, behavior: reduce ? "auto" : "smooth" }); }
+                    catch (x) { window.scrollTo(0, top); }
+                    if (history.replaceState) history.replaceState(null, "", "#story");
+                    try { target.focus({ preventScroll: true }); } catch (x) { target.focus(); }
+                });
+            })();
+        </script>
+        <script>
+            /* Nav highlight: marks the menu link for the section currently under the header. Scrolling itself is native
+               smooth-scroll (html { scroll-behavior: smooth } + scroll-padding-top), so every #link works with JS off too. */
+            (function () {
+                var hdr = document.querySelector(".site");
+                var links = Array.prototype.slice.call(document.querySelectorAll('.menu a[href^="#"]')).map(function (a) {
+                    return { a: a, el: document.getElementById(a.getAttribute("href").slice(1)) };
+                }).filter(function (x) { return x.el; });
+                if (!links.length) return;
+                var ticking = false;
+                function update() {
+                    ticking = false;
+                    var line = (hdr ? hdr.offsetHeight : 78) + 40;
+                    var atEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+                    var active = links[0];
+                    for (var i = 0; i < links.length; i++) {
+                        if (links[i].el.getBoundingClientRect().top <= line) active = links[i];
+                    }
+                    if (atEnd) active = links[links.length - 1];
+                    links.forEach(function (x) {
+                        if (x === active) x.a.setAttribute("aria-current", "true"); else x.a.removeAttribute("aria-current");
+                    });
+                }
+                function req() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+                window.addEventListener("scroll", req, { passive: true });
+                window.addEventListener("resize", req);
+                window.addEventListener("load", update);
+                update();
             })();
         </script>
     </body>
