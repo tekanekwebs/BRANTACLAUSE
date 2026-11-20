@@ -893,8 +893,13 @@
             .branta .no { display: inline-block; transform: none; }
             /* phones: slightly smaller video and headline so the text never runs behind the video */
             @media (max-width: 699px) {
-                .m-branta { width: min(54vw, 450px); }
-                .santa .label, .santa .ho, .branta .label, .branta .no-line, .branta .no { font-size: clamp(19px, 5.2vw, 30px); }
+                .m-branta { width: min(64vw, 520px); }
+                .unit { --pw: clamp(56px, 16vw, 130px); } /* pointing-Santa image = 1/4 of the video width */
+                /* equal space above, between and below the headline and the pointing-Santa + button */
+                .content { justify-content: space-evenly; min-height: calc(100svh - var(--bar, 56px) - 120px); padding-top: 0; padding-bottom: 0; }
+                .unit .bubble { font-size: clamp(11px, 3.1vw, 15px); min-height: 0; padding: 7px 8px 7px 12px; border-radius: 14px; }
+                .unit .bubble .go { width: auto; padding-left: 4px; font-size: 1em; }
+                .santa .label, .santa .ho, .branta .label, .branta .no-line, .branta .no { font-size: clamp(24px, 6.8vw, 40px); }
             }
         </style>
 
