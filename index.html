@@ -51,7 +51,7 @@
                 --red-hot: #f25c4f;
                 --gold: #f2c14e;
                 --line: rgba(255, 246, 229, 0.16);
-                --display: "Cloister Black", "UnifrakturCook", "Old English Text MT", "IM Fell English SC", Georgia, serif;
+                --display: "Fraunces", Georgia, serif;
                 --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
                 --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
                 --bar: 78px;
@@ -868,10 +868,33 @@
             .bv::-webkit-media-controls-panel,
             .bv::-webkit-media-controls-enclosure { display: none !important; -webkit-appearance: none; opacity: 0 !important; }
 
-            /* ---------- Old English / Blackletter for all text ---------- */
-            html, body, body *, body *::before, body *::after,
-            button, input, textarea, select {
-                font-family: "Cloister Black", "UnifrakturCook", "Old English Text MT", "IM Fell English SC", Georgia, serif !important;
+            /* ---------- custom font: only the "Santa Claus says Ho Ho Ho! / Branta Claus says No! No! No!" block ---------- */
+            @font-face {
+                font-family: 'BrantaOldEnglish';
+                src: url("branta-font.ttf") format("truetype");
+                font-weight: 100 900;
+                font-style: normal;
+                font-display: swap;
+            }
+            .santa .label, .santa .ho, .branta .label, .branta .no-line, .branta .no {
+                font-family: 'BrantaOldEnglish', "Cloister Black", "UnifrakturCook", "Old English Text MT", "IM Fell English SC", Georgia, serif;
+            }
+            /* 4 matching lines: Santa Claus says / “Ho ho ho!” / Branta Claus says / “No! No! No!” */
+            .santa .label, .santa .ho, .branta .label, .branta .no-line, .branta .no {
+                font-size: clamp(22px, max(calc(var(--s, 0.6) * 38), 5.6vw), 44px);
+                font-style: normal;
+                font-weight: 400;
+                line-height: 1.15;
+                letter-spacing: 0.02em;
+                text-transform: none;
+                text-decoration: none;
+                color: var(--ink);
+            }
+            .branta .no { display: inline-block; transform: none; }
+            /* phones: slightly smaller video and headline so the text never runs behind the video */
+            @media (max-width: 699px) {
+                .m-branta { width: min(54vw, 450px); }
+                .santa .label, .santa .ho, .branta .label, .branta .no-line, .branta .no { font-size: clamp(19px, 5.2vw, 30px); }
             }
         </style>
 
@@ -1745,13 +1768,11 @@
                             </div>
                             <p class="santa">
                                 <span class="label">Santa Claus says</span>
-                                <span class="ho">“Ho Ho Ho!”</span>
+                                <span class="ho">“Ho ho ho!”</span>
                             </p>
                             <h1 class="branta">
                                 <span class="label">Branta Claus says</span>
-                                <span class="no n1">“No!</span>
-                                <span class="no n2">No!</span>
-                                <span class="no n3">No!”</span>
+                                <span class="no-line"><span class="no n1">“No!</span> <span class="no n2">No!</span> <span class="no n3">No!”</span></span>
                             </h1>
                         </div>
                         <div class="unit">
